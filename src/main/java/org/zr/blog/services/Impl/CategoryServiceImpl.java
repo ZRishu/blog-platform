@@ -1,8 +1,9 @@
 package org.zr.blog.services.Impl;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zr.blog.domain.entities.Category;
 import org.zr.blog.repositories.CategoryRepository;
 import org.zr.blog.services.CategoryService;
@@ -41,5 +42,11 @@ public class CategoryServiceImpl implements CategoryService {
             }
             categoryRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public Category getCategoryById(UUID id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id " + id));
     }
 }

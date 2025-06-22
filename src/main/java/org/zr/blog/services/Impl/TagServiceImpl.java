@@ -1,8 +1,9 @@
 package org.zr.blog.services.Impl;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zr.blog.domain.entities.Tag;
 import org.zr.blog.repositories.TagRepository;
 import org.zr.blog.services.TagService;
@@ -55,5 +56,20 @@ public class TagServiceImpl implements TagService {
             }
             tagRepository.deleteById(id);
         });
+    }
+
+    @Override
+    public Tag getTagById(UUID id) {
+        return tagRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No tag found with id: " + id));
+    }
+
+    @Override
+    public List<Tag> getTagsByIds(Set<UUID> ids) {
+        List<Tag> foundTags = tagRepository.findAllById(ids);
+        if (foundTags.size() != ids.size()) {
+            throw new IllegalStateException("Not all specified tag IDs exist");
+        }
+        return foundTags;
     }
 }

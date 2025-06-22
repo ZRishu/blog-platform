@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zr.blog.domain.dtos.CreateTagsRequest;
-import org.zr.blog.domain.dtos.TagResponse;
+import org.zr.blog.domain.dtos.TagDto;
 import org.zr.blog.domain.entities.Tag;
 import org.zr.blog.mappers.TagMapper;
 import org.zr.blog.services.TagService;
@@ -23,17 +23,17 @@ public class TagController {
     private final TagMapper tagMapper;
 
     @GetMapping
-    public ResponseEntity<List<TagResponse>> getAllTags() {
+    public ResponseEntity<List<TagDto>> getAllTags() {
         List<Tag> tags = tagService.getTags();
-        List<TagResponse> tagResponses = tags.stream().map(tagMapper::toTagResponse).toList();
-        return ResponseEntity.ok(tagResponses);
+        List<TagDto> tagDtoList = tags.stream().map(tagMapper::toTagDto).toList();
+        return ResponseEntity.ok(tagDtoList);
     }
 
     @PostMapping
-    public ResponseEntity<List<TagResponse>> createTags(@RequestBody @Valid CreateTagsRequest createTagsRequest) {
+    public ResponseEntity<List<TagDto>> createTags(@RequestBody @Valid CreateTagsRequest createTagsRequest) {
         List<Tag> savedTags = tagService.createTags(createTagsRequest.getNames());
-        List<TagResponse> createdTagResponses = savedTags.stream().map(tagMapper::toTagResponse).toList();
-        return new ResponseEntity<>(createdTagResponses,HttpStatus.CREATED);
+        List<TagDto> createdTagtagDtoList = savedTags.stream().map(tagMapper::toTagDto).toList();
+        return new ResponseEntity<>(createdTagtagDtoList,HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
