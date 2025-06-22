@@ -5,23 +5,20 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.zr.blog.domain.PostStatus;
-import org.zr.blog.domain.dtos.CategoryDto;
-import org.zr.blog.domain.dtos.CreateCategoryRequest;
-import org.zr.blog.domain.entities.Category;
+import org.zr.blog.domain.dtos.TagResponse;
 import org.zr.blog.domain.entities.Post;
+import org.zr.blog.domain.entities.Tag;
 
-import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface CategoryMapper {
+public interface TagMapper {
     @Mapping(target = "postCount", source = "posts", qualifiedByName = "calculatePostCount")
-    CategoryDto toDto(Category category);
-
-    Category toEntity(CreateCategoryRequest createCategoryRequest);
+    TagResponse toTagResponse(Tag tag);
 
     @Named("calculatePostCount")
-    default Integer calculatePostCount(List<Post> posts) {
-        if (posts == null || posts.isEmpty()) {
+    default Integer calculatePostCount(Set<Post> posts) {
+        if (posts == null) {
             return 0;
         }
         return (int) posts.stream().filter(post -> PostStatus.PUBLISHED.equals(post.getStatus()))
